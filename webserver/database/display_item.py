@@ -1,5 +1,3 @@
-# database/models.py
-from datetime import datetime
 from . import db
 
 class DisplayItem(db.Model):
@@ -29,31 +27,4 @@ class DisplayItem(db.Model):
     
     @classmethod
     def get_all(cls):
-        """Retourne les items actifs triés par ordre d'affichage"""
         return cls.query.order_by(cls.display_order, cls.name).all()
-    
-    @classmethod
-    def get_all_topics(cls):
-        """Retourne tous les topics MQTT actifs"""
-        return [item.mqtt_topic for item in cls.get_all()]
-
-class Configuration(db.Model):
-    __tablename__ = 'configuration'
-    
-    key = db.Column(db.String(100), primary_key=True)
-    value = db.Column(db.Text, nullable=False)
-    description = db.Column(db.Text)
-    
-    def __repr__(self):
-        return f'<Configuration {self.key}={self.value}>'
-    
-    def to_dict(self):
-        return {
-            'key': self.key,
-            'value': self.value,
-            'description': self.description
-        }
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.order_by(cls.key).all()

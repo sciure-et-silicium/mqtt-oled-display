@@ -22,12 +22,10 @@ def update_item(key):
     try:
         item = Configuration.query.get_or_404(key)
         data = request.get_json()
-        
-        # Validation
+
         if not data.get('value'):
             return jsonify({'error': 'value is required'}), 400
         
-        # Mettre à jour seulement la valeur et la description
         item.value = data['value']
         item.description = data.get('description', item.description)
         

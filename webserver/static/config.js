@@ -1,6 +1,5 @@
 let currentEditKey = null;
 
-// Chargement initial
 document.addEventListener('DOMContentLoaded', function() {
     loadConfigs();
     setupForm();

@@ -1,4 +1,3 @@
-# api/routes.py
 from flask import Blueprint, request, jsonify
 from database import db, DisplayItem, Configuration
 
@@ -22,16 +21,13 @@ def create_item():
     try:
         data = request.get_json()
         
-        # Validation
         if not data.get('name') or not data.get('mqtt_topic'):
             return jsonify({'error': 'Name and MQTT topic are required'}), 400
         
-        # Vérifier si le nom existe déjà
         existing = DisplayItem.query.filter_by(name=data['name']).first()
         if existing:
             return jsonify({'error': 'Name already exists'}), 400
         
-        # Créer l'item
         item = DisplayItem(
             name=data['name'],
             mqtt_topic=data['mqtt_topic'],
@@ -54,19 +50,16 @@ def update_item(item_id):
         item = DisplayItem.query.get_or_404(item_id)
         data = request.get_json()
         
-        # Validation
         if not data.get('name') or not data.get('mqtt_topic'):
             return jsonify({'error': 'Name and MQTT topic are required'}), 400
         
-        # Vérifier si le nom existe déjà (sauf pour cet item)
         existing = DisplayItem.query.filter(
             DisplayItem.name == data['name'],
             DisplayItem.id != item_id
         ).first()
         if existing:
             return jsonify({'error': 'Name already exists'}), 400
-        
-        # Mettre à jour
+
         item.name = data['name']
         item.mqtt_topic = data['mqtt_topic']
         item.unit = data.get('unit', '')

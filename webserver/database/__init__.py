@@ -1,19 +1,16 @@
-# database/__init__.py
 from flask_sqlalchemy import SQLAlchemy
 
-# Instance globale SQLAlchemy
+# SQLAlchemy Global Instance
 db = SQLAlchemy()
 
-# Imports pour faciliter l'utilisation
-from .models import DisplayItem, Configuration
-from .connection import get_db_connection
+from .configuration import Configuration
+from .display_item import DisplayItem
 from .init_db import init_database, init_default_config
 
 __all__ = [
     'db',
-    'DisplayItem', 
     'Configuration',
-    'get_db_connection',
+    'DisplayItem', 
     'init_database',
     'init_default_config'
 ]
