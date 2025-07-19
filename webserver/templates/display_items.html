@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style>
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.inactive-item {
+    opacity: 0.6;
+}
+
+/* Style pour les small texts */
+small {
+    color: #666;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<a style="float:right; font-size:30px" href="/config">⚙️</a>
+<h1>MQTT Display</h1>
+
+
+
+<!-- Liste des items -->
+ <h2>Liste des DisplayItems</h2>
+<div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="display: none;">ID</th>
+                <th>Label</th>
+                <th>Topic</th>
+                <th>Unités</th>
+                <th>Durée</th>
+                <th>Ordre</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="items-table-body">
+            <!-- Les items seront ajoutés ici par JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Messages -->
+<div id="messages"></div>
+<h2 id="form-title">Ajouter un DisplayItem</h2>
+<!-- Formulaire -->
+<div class="form-section">
+    
+    <form id="item-form">
+        <input type="hidden" id="item-id" name="id">
+        
+        <div class="form-group">
+            <label for="name">Label (max 32 caractères) :</label>
+            <input type="text" id="name" name="name" maxlength="32" required>
+            <div class="error" id="name-error"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="mqtt_topic">Topic MQTT :</label>
+            <input type="text" id="mqtt_topic" name="mqtt_topic" required>
+            <div class="error" id="mqtt_topic-error"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="unit">Unités :</label>
+            <input type="text" id="unit" name="unit" required>
+            <div class="error" id="unit-error"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="duration">Durée (en secondes) :</label>
+            <input type="number" id="duration" name="duration" min="1" required>
+            <div class="error" id="duration-error"></div>
+        </div>
+        
+        <!-- Nouveau champ display_order -->
+        <div class="form-group">
+            <label for="display_order">Ordre d'affichage :</label>
+            <input type="number" id="display_order" name="display_order" min="0" value="0">
+            <div class="error" id="display_order-error"></div>
+            <small>Plus le nombre est petit, plus l'item sera affiché en premier</small>
+        </div>
+        
+        <!-- Nouveau champ is_active -->
+        <div class="form-group">
+            <label for="is_active">
+                <input type="checkbox" id="is_active" name="is_active" checked>
+                Actif
+            </label>
+            <div class="error" id="is_active-error"></div>
+            <small>Décocher pour désactiver temporairement cet item</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="submit-btn">Ajouter</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">Annuler</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='display_items.js') }}"></script>
+{% endblock %}
