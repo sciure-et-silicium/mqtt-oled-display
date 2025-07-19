@@ -11,13 +11,13 @@ def init_database():
 
 def init_default_config():
     defaults = {
-        'mqtt.broker': ('localhost', 'Adresse du broker MQTT'),
+        'mqtt.broker': ('localhost', 'MQTT broker address'),
         'mqtt.port': ('1883', 'Port du broker MQTT'),
-        'mqtt.username': ('', 'Nom d\'utilisateur MQTT'),
-        'mqtt.password': ('', 'Mot de passe MQTT'),
-        'mqtt.keepalive': ('60', 'Keepalive MQTT en secondes'),
-        'mqtt.qos': ('1', 'QoS MQTT (0, 1 ou 2)'),
-        'mqtt.client_id': ('data_collector', 'ID du client MQTT')
+        'mqtt.username': ('', 'MQTT username'),
+        'mqtt.password': ('', 'MQTT password'),
+        'mqtt.keepalive': ('60', ''),
+        'mqtt.qos': ('1', ''),
+        'mqtt.client_id': ('data_collector', 'MQTT client id')
     }
     
     for key, (value, description) in defaults.items():

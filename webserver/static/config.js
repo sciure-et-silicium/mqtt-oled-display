@@ -31,9 +31,9 @@ async function handleSubmit(event) {
         });
         
         if (response.ok) {
-            showMessage('Configuration mise à jour avec succès !', 'success');
+            showMessage('Configuration updated successfully!', 'success');
             loadConfigs();
-            // Garder le formulaire ouvert avec les nouvelles valeurs
+            // Keep the form open with the new values
             const updatedConfig = await response.json();
             document.getElementById('value').value = updatedConfig.value;
             document.getElementById('description').value = updatedConfig.description || '';
@@ -42,11 +42,11 @@ async function handleSubmit(event) {
             if (errorData.errors) {
                 displayErrors(errorData.errors);
             } else {
-                showMessage(`Erreur : ${errorData.error || 'Erreur inconnue'}`, 'error');
+                showMessage(`Error: ${errorData.error || 'Unknown error'}`, 'error');
             }
         }
     } catch (error) {
-        showMessage('Erreur de connexion', 'error');
+        showMessage('Connection error', 'error');
         console.error('Error:', error);
     }
 }
@@ -71,7 +71,7 @@ async function loadConfigs() {
                 <td class="config-description">${escapeHtml(config.description || '')}</td>
                 <td>
                     <button class="btn btn-secondary" onclick="editConfig('${escapeHtml(config.key)}')">
-                        ${currentEditKey === config.key ? 'En cours...' : 'Éditer'}
+                        ${currentEditKey === config.key ? 'In progress...' : 'Edit'}
                     </button>
                 </td>
             `;
@@ -80,7 +80,7 @@ async function loadConfigs() {
         });
         
     } catch (error) {
-        showMessage('Erreur lors du chargement des configurations', 'error');
+        showMessage('Error loading configurations', 'error');
         console.error('Error:', error);
     }
 }
@@ -96,18 +96,18 @@ async function editConfig(key) {
         
         currentEditKey = key;
         
-        // Afficher le formulaire et masquer le message
+        // Show the form and hide the message
         document.getElementById('config-form').style.display = 'block';
         document.getElementById('no-selection').style.display = 'none';
         
-        // Scroll vers le formulaire
+        // Scroll to the form
         document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
         
-        // Recharger pour mettre à jour l'affichage des boutons
+        // Reload to update button display
         loadConfigs();
         
     } catch (error) {
-        showMessage('Erreur lors du chargement de la configuration', 'error');
+        showMessage('Error loading configuration', 'error');
         console.error('Error:', error);
     }
 }

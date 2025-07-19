@@ -2,19 +2,19 @@
 from flask import Flask
 from database import db, init_database
 
-# Import des blueprints
+# Import blueprints
 from api import api_config, api_display_item
 from web.routes import web_bp
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'votre-cle-secrete'
+app.config['SECRET_KEY'] = 'verysecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialisation de la base de données
+# Database initialization
 db.init_app(app)
 
-# Enregistrement des blueprints
+# Blueprint registration
 app.register_blueprint(api_config)
 app.register_blueprint(api_display_item)
 

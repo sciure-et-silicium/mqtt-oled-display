@@ -23,7 +23,7 @@
     opacity: 0.6;
 }
 
-/* Style pour les small texts */
+/* Style for small texts */
 small {
     color: #666;
     font-size: 12px;
@@ -39,8 +39,8 @@ small {
 
 
 
-<!-- Liste des items -->
- <h2>Liste des DisplayItems</h2>
+<!-- Items list -->
+ <h2>DisplayItems List</h2>
 <div>
     
     <table class="table">
@@ -49,72 +49,72 @@ small {
                 <th style="display: none;">ID</th>
                 <th>Label</th>
                 <th>Topic</th>
-                <th>Unités</th>
-                <th>Durée</th>
-                <th>Ordre</th>
+                <th>Units</th>
+                <th>Duration</th>
+                <th>Order</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody id="items-table-body">
-            <!-- Les items seront ajoutés ici par JavaScript -->
+            <!-- Items will be added here by JavaScript -->
         </tbody>
     </table>
 </div>
 
 <!-- Messages -->
 <div id="messages"></div>
-<h2 id="form-title">Ajouter un DisplayItem</h2>
-<!-- Formulaire -->
+<h2 id="form-title">Add DisplayItem</h2>
+<!-- Form -->
 <div class="form-section">
     
     <form id="item-form">
         <input type="hidden" id="item-id" name="id">
         
         <div class="form-group">
-            <label for="name">Label (max 32 caractères) :</label>
+            <label for="name">Label (max 32 characters):</label>
             <input type="text" id="name" name="name" maxlength="32" required>
             <div class="error" id="name-error"></div>
         </div>
         
         <div class="form-group">
-            <label for="mqtt_topic">Topic MQTT :</label>
+            <label for="mqtt_topic">MQTT Topic:</label>
             <input type="text" id="mqtt_topic" name="mqtt_topic" required>
             <div class="error" id="mqtt_topic-error"></div>
         </div>
         
         <div class="form-group">
-            <label for="unit">Unités :</label>
+            <label for="unit">Units:</label>
             <input type="text" id="unit" name="unit" required>
             <div class="error" id="unit-error"></div>
         </div>
         
         <div class="form-group">
-            <label for="duration">Durée (en secondes) :</label>
+            <label for="duration">Duration (in seconds):</label>
             <input type="number" id="duration" name="duration" min="1" required>
             <div class="error" id="duration-error"></div>
         </div>
         
-        <!-- Nouveau champ display_order -->
+        <!-- New display_order field -->
         <div class="form-group">
-            <label for="display_order">Ordre d'affichage :</label>
+            <label for="display_order">Display order:</label>
             <input type="number" id="display_order" name="display_order" min="0" value="0">
             <div class="error" id="display_order-error"></div>
-            <small>Plus le nombre est petit, plus l'item sera affiché en premier</small>
+            <small>The lower the number, the earlier the item will be displayed</small>
         </div>
         
-        <!-- Nouveau champ is_active -->
+        <!-- New is_active field -->
         <div class="form-group">
             <label for="is_active">
                 <input type="checkbox" id="is_active" name="is_active" checked>
-                Actif
+                Active
             </label>
             <div class="error" id="is_active-error"></div>
-            <small>Décocher pour désactiver temporairement cet item</small>
+            <small>Uncheck to temporarily disable this item</small>
         </div>
         
-        <button type="submit" class="btn btn-primary" id="submit-btn">Ajouter</button>
-        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">Annuler</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Add</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">Cancel</button>
     </form>
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 
 {% block css %}
 <style>
-/* Styles pour la page config */
+/* Styles for config page */
 .config-table code {
     background-color: #f8f9fa;
     padding: 2px 6px;
@@ -52,54 +52,54 @@ input[readonly] {
 {% block content %}
 <h1>Configuration</h1>
 
-<!-- Formulaire -->
+<!-- Form -->
 <div class="form-section">
-    <h2 id="form-title">Modifier une Configuration</h2>
+    <h2 id="form-title">Edit Configuration</h2>
     <form id="config-form" style="display: none;">
         <div class="form-group">
-            <label for="key">Clé de configuration :</label>
+            <label for="key">Configuration key:</label>
             <input type="text" id="key" name="key" readonly>
-            <small>La clé ne peut pas être modifiée</small>
+            <small>The key cannot be modified</small>
         </div>
         
         <div class="form-group">
-            <label for="value">Valeur :</label>
+            <label for="value">Value:</label>
             <input type="text" id="value" name="value" required>
             <div class="error" id="value-error"></div>
         </div>
         
         <div class="form-group">
-            <label for="description">Description :</label>
+            <label for="description">Description:</label>
             <textarea id="description" name="description" rows="3"></textarea>
             <div class="error" id="description-error"></div>
         </div>
         
-        <button type="submit" class="btn btn-primary" id="submit-btn">Modifier</button>
-        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">Annuler</button>
+        <button type="submit" class="btn btn-primary" id="submit-btn">Update</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">Cancel</button>
     </form>
     
     <div id="no-selection" class="info-message">
-        <p>Sélectionnez une configuration dans la liste ci-dessous pour la modifier.</p>
+        <p>Select a configuration from the list below to edit it.</p>
     </div>
 </div>
 
 <!-- Messages -->
 <div id="messages"></div>
 
-<!-- Liste des configurations -->
+<!-- Configuration list -->
 <div>
-    <h2>Liste des Configurations</h2>
+    <h2>Configuration List</h2>
     <table class="table config-table">
         <thead>
             <tr>
-                <th>Clé</th>
-                <th>Valeur</th>
+                <th>Key</th>
+                <th>Value</th>
                 <th>Description</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody id="config-table-body">
-            <!-- Les configurations seront ajoutées ici par JavaScript -->
+            <!-- Configurations will be added here by JavaScript -->
         </tbody>
     </table>
 </div>

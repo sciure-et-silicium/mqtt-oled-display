@@ -1,6 +1,6 @@
 let currentEditId = null;
 
-// Chargement initial
+// Initial loading
 document.addEventListener('DOMContentLoaded', function() {
     loadItems();
     setupForm();
@@ -29,7 +29,7 @@ async function handleSubmit(event) {
     try {
         let response;
         if (currentEditId) {
-            // Mise à jour
+            // Update
             response = await fetch(`/api/display_item/${currentEditId}`, {
                 method: 'PUT',
                 headers: {
@@ -38,7 +38,7 @@ async function handleSubmit(event) {
                 body: JSON.stringify(data)
             });
         } else {
-            // Création
+            // Create
             response = await fetch('/api/display_item', {
                 method: 'POST',
                 headers: {
@@ -49,7 +49,7 @@ async function handleSubmit(event) {
         }
         
         if (response.ok) {
-            showMessage('Item sauvegardé avec succès !', 'success');
+            showMessage('Item saved successfully!', 'success');
             resetForm();
             loadItems();
         } else {
@@ -57,11 +57,11 @@ async function handleSubmit(event) {
             if (errorData.errors) {
                 displayErrors(errorData.errors);
             } else {
-                showMessage('Erreur lors de la sauvegarde', 'error');
+                showMessage('Save error', 'error');
             }
         }
     } catch (error) {
-        showMessage('Erreur de connexion', 'error');
+        showMessage('Connection error', 'error');
         console.error('Error:', error);
     }
 }
@@ -74,12 +74,12 @@ async function loadItems() {
         const tbody = document.getElementById('items-table-body');
         tbody.innerHTML = '';
         
-        // Trier par display_order
+        // Sort by display_order
         items.sort((a, b) => a.display_order - b.display_order);
         
         items.forEach(item => {
             const row = document.createElement('tr');
-            // Ajouter une classe pour les items inactifs
+            // Add class for inactive items
             if (!item.is_active) {
                 row.classList.add('inactive-item');
             }
@@ -93,18 +93,18 @@ async function loadItems() {
                 <td>${item.display_order}</td>
                 <td>
                     <span class="status ${item.is_active ? 'active' : 'inactive'}">
-                        ${item.is_active ? 'Actif' : 'Inactif'}
+                        ${item.is_active ? 'Active' : 'Inactive'}
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-secondary" onclick="editItem(${item.id})">Éditer</button>
-                    <button class="btn btn-danger" onclick="deleteItem(${item.id})">Supprimer</button>
+                    <button class="btn btn-secondary" onclick="editItem(${item.id})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
     } catch (error) {
-        showMessage('Erreur lors du chargement des items', 'error');
+        showMessage('Error loading items', 'error');
         console.error('Error:', error);
     }
 }
@@ -122,21 +122,21 @@ async function editItem(id) {
         document.getElementById('display_order').value = item.display_order;
         document.getElementById('is_active').checked = item.is_active;
         
-        document.getElementById('form-title').textContent = 'Modifier un DisplayItem';
-        document.getElementById('submit-btn').textContent = 'Modifier';
+        document.getElementById('form-title').textContent = 'Edit DisplayItem';
+        document.getElementById('submit-btn').textContent = 'Update';
         
         currentEditId = id;
         
-        // Scroll vers le formulaire
+        // Scroll to form
         document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
-        showMessage('Erreur lors du chargement de l\'item', 'error');
+        showMessage('Error loading item', 'error');
         console.error('Error:', error);
     }
 }
 
 async function deleteItem(id) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet item ?')) {
+    if (!confirm('Are you sure you want to delete this item?')) {
         return;
     }
     
@@ -146,14 +146,14 @@ async function deleteItem(id) {
         });
         
         if (response.ok) {
-            showMessage('Item supprimé avec succès !', 'success');
+            showMessage('Item deleted successfully!', 'success');
             loadItems();
         } else {
             const errorData = await response.json();
-            showMessage(`Erreur lors de la suppression: ${errorData.error || 'Erreur inconnue'}`, 'error');
+            showMessage(`Delete error: ${errorData.error || 'Unknown error'}`, 'error');
         }
     } catch (error) {
-        showMessage('Erreur de connexion', 'error');
+        showMessage('Connection error', 'error');
         console.error('Error:', error);
     }
 }
@@ -164,12 +164,12 @@ function cancelEdit() {
 
 function resetForm() {
     document.getElementById('item-form').reset();
-    // Remettre les valeurs par défaut
+    // Reset default values
     document.getElementById('display_order').value = 0;
     document.getElementById('is_active').checked = true;
     
-    document.getElementById('form-title').textContent = 'Ajouter un DisplayItem';
-    document.getElementById('submit-btn').textContent = 'Ajouter';
+    document.getElementById('form-title').textContent = 'Add DisplayItem';
+    document.getElementById('submit-btn').textContent = 'Add';
     currentEditId = null;
     clearErrors();
 }
@@ -194,7 +194,7 @@ function showMessage(message, type) {
     const messagesDiv = document.getElementById('messages');
     messagesDiv.innerHTML = `<div class="${type}" style="padding: 10px; margin: 10px 0; border-radius: 4px; background-color: ${type === 'success' ? '#d4edda' : '#f8d7da'};">${message}</div>`;
     
-    // Supprimer le message après 5 secondes
+    // Remove message after 5 seconds
     setTimeout(() => {
         messagesDiv.innerHTML = '';
     }, 5000);

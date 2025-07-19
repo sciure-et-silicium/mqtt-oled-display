@@ -1,3 +1,5 @@
-pip install flask
-sudo python app.py
+pip install flask flask-babel flask-sqlalchemy
+
+
+
 
