@@ -33,7 +33,8 @@ def create_item():
             mqtt_topic=data['mqtt_topic'],
             render_template=data.get('render_template', ''),
             display_order=data.get('display_order', 0),
-            is_active=data.get('is_active', True)
+            is_active=data.get('is_active', True),
+            duration=data.get('duration',0)
         )
         
         db.session.add(item)
@@ -65,6 +66,7 @@ def update_item(item_id):
         item.render_template = data.get('render_template', '')
         item.display_order = data.get('display_order', 0)
         item.is_active = data.get('is_active', True)
+        item.duration = data.get('duration',0)
         
         db.session.commit()
         
