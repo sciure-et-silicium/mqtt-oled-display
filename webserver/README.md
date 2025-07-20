@@ -1,4 +1,4 @@
-pip install flask flask-babel flask-sqlalchemy
+pip install flask flask-babel flask-sqlalchemy paho-mqtt
 
 
 

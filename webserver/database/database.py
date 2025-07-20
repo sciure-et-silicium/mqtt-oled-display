@@ -1,11 +1,49 @@
-# database/init_db.py
-from . import db
 from .configuration import Configuration
 from .display_item import DisplayItem
+from sqlalchemy import create_engine, orm
+from sqlalchemy.ext.declarative import declarative_base
+from . import db  
 
 
-def init_database():
-    db.create_all()
+Base = declarative_base()
+
+
+
+def init_database(app=None):
+    print(f"init_database")
+    if app is not None:
+        _init_flask_db(app)
+    else :
+        _init_standalone_db()
+
+def _init_flask_db(app):
+    print(f"_init_flask_db")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
+        init_default_config()
+        init_sample_data()
+
+def _init_standalone_db():
+    print(f"_init_standalone_db")
+    engine = create_engine('sqlite:///./instance/database.db')
+    Base.metadata.bind = engine
+
+    # Configure session
+    Session = orm.scoped_session(orm.sessionmaker(bind=engine))
+    db.session = Session
+
+    # Make db.Model work like in Flask-SQLAlchemy
+    db.Model = Base
+    db.Column = db.Column
+    db.relationship = orm.relationship
+    db.ForeignKey = db.ForeignKey
+
+    # Create tables
+    Base.metadata.create_all(engine)
+
     init_default_config()
     init_sample_data()
 

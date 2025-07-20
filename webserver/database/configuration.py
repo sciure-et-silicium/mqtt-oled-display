@@ -1,4 +1,4 @@
-from . import db
+from . import db  
 
 class Configuration(db.Model):
     __tablename__ = 'configuration'
@@ -20,3 +20,9 @@ class Configuration(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.order_by(cls.key).all()
+
+    @classmethod
+    def get_value_by_key(cls, key):
+        config = cls.query.filter_by(key=key).first()
+        return config.value if config else None
+        
