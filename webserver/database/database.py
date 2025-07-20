@@ -4,20 +4,15 @@ from sqlalchemy import create_engine, orm
 from sqlalchemy.ext.declarative import declarative_base
 from . import db  
 
-
 Base = declarative_base()
 
-
-
 def init_database(app=None):
-    print(f"init_database")
     if app is not None:
         _init_flask_db(app)
     else :
         _init_standalone_db()
 
 def _init_flask_db(app):
-    print(f"_init_flask_db")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
     with app.app_context():
@@ -27,7 +22,6 @@ def _init_flask_db(app):
         init_sample_data()
 
 def _init_standalone_db():
-    print(f"_init_standalone_db")
     engine = create_engine('sqlite:///./instance/database.db')
     Base.metadata.bind = engine
 
