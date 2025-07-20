@@ -9,7 +9,7 @@ init_database()
 
  # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-logging.info("MQTT client started successfully")
+
 
 # Create MQTT client instance
 mqtt_client = MQTTClient(
