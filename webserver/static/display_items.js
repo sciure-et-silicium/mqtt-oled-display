@@ -20,7 +20,7 @@ async function handleSubmit(event) {
     const data = {
         name: formData.get('name'),
         mqtt_topic: formData.get('mqtt_topic'),
-        unit: formData.get('unit'),
+        render_template: formData.get('render_template'),
         duration: parseInt(formData.get('duration')),
         display_order: parseInt(formData.get('display_order')) || 0,
         is_active: formData.get('is_active') === 'on' // checkbox value
@@ -85,20 +85,16 @@ async function loadItems() {
             }
             
             row.innerHTML = `
-                <th style="display: none;">${item.id}</th>
-                <td>${escapeHtml(item.name)}</td>
-                <td>${escapeHtml(item.mqtt_topic)}</td>
-                <td>${escapeHtml(item.unit)}</td>
+                <td style="display: none;">${item.id}</td>
+                <td title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</td>
+                <td title="${escapeHtml(item.mqtt_topic)}">${escapeHtml(item.mqtt_topic)}</td>
+                <td title="${escapeHtml(item.render_template)}">${escapeHtml(item.render_template)}</td>
                 <td>${item.duration}s</td>
                 <td>${item.display_order}</td>
+                <td><span class="status ${item.is_active ? 'active' : 'inactive'}">${item.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td>
-                    <span class="status ${item.is_active ? 'active' : 'inactive'}">
-                        ${item.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                </td>
-                <td>
-                    <button class="btn btn-secondary" onclick="editItem(${item.id})">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button>
+                    <button class="btn btn-sm btn-primary" onclick="editItem(${item.id})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})">Delete</button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -114,14 +110,15 @@ async function editItem(id) {
         const response = await fetch(`/api/display_item/${id}`);
         const item = await response.json();
         
-        document.getElementById('item-id').value = item.id;
+        // Fill form
         document.getElementById('name').value = item.name;
         document.getElementById('mqtt_topic').value = item.mqtt_topic;
-        document.getElementById('unit').value = item.unit;
+        document.getElementById('render_template').value = item.render_template;
         document.getElementById('duration').value = item.duration;
-        document.getElementById('display_order').value = item.display_order;
+        document.getElementById('display_order').value = item.display_order || 0;
         document.getElementById('is_active').checked = item.is_active;
         
+        // Change form title and button
         document.getElementById('form-title').textContent = 'Edit DisplayItem';
         document.getElementById('submit-btn').textContent = 'Update';
         

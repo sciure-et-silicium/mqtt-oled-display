@@ -37,8 +37,6 @@ small {
 <a style="float:right; font-size:30px" href="/config">⚙️</a>
 <h1>MQTT Display</h1>
 
-
-
 <!-- Items list -->
  <h2>DisplayItems List</h2>
 <div>
@@ -49,7 +47,7 @@ small {
                 <th style="display: none;">ID</th>
                 <th>Label</th>
                 <th>Topic</th>
-                <th>Units</th>
+                <th>Render Template</th>
                 <th>Duration</th>
                 <th>Order</th>
                 <th>Status</th>
@@ -84,9 +82,9 @@ small {
         </div>
         
         <div class="form-group">
-            <label for="unit">Units:</label>
-            <input type="text" id="unit" name="unit" required>
-            <div class="error" id="unit-error"></div>
+            <label for="render_template">Render Template:</label>
+            <input type="text" id="render_template" name="render_template" required>
+            <div class="error" id="render_template-error"></div>
         </div>
         
         <div class="form-group">

@@ -5,8 +5,8 @@ class DisplayItem(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    mqtt_topic = db.Column(db.String(200), nullable=False)
-    unit = db.Column(db.String(20))
+    mqtt_topic = db.Column(db.String(255), nullable=False)
+    render_template = db.Column(db.String(255), nullable=False) 
     duration = db.Column(db.Integer, default=0)
     display_order = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
@@ -19,7 +19,7 @@ class DisplayItem(db.Model):
             'id': self.id,
             'name': self.name,
             'mqtt_topic': self.mqtt_topic,
-            'unit': self.unit,
+            'render_template': self.render_template,
             'duration': self.duration,
             'display_order': self.display_order,
             'is_active': self.is_active

@@ -31,7 +31,7 @@ def create_item():
         item = DisplayItem(
             name=data['name'],
             mqtt_topic=data['mqtt_topic'],
-            unit=data.get('unit', ''),
+            render_template=data.get('render_template', ''),
             display_order=data.get('display_order', 0),
             is_active=data.get('is_active', True)
         )
@@ -62,7 +62,7 @@ def update_item(item_id):
 
         item.name = data['name']
         item.mqtt_topic = data['mqtt_topic']
-        item.unit = data.get('unit', '')
+        item.render_template = data.get('render_template', '')
         item.display_order = data.get('display_order', 0)
         item.is_active = data.get('is_active', True)
         
