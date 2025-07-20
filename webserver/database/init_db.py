@@ -30,9 +30,9 @@ def init_default_config():
 def init_sample_data():
     if DisplayItem.query.count() == 0:
         samples = [
-            DisplayItem(name='Living Room Temperature', mqtt_topic='sensors/living_room/temperature', render_template='{payload.temperature}°C', display_order=1, duration=5),
-            DisplayItem(name='Humidity Living Room', mqtt_topic='sensors/living_room/humidity', render_template='{payload.humidity}%', display_order=2, duration=5),
-            DisplayItem(name='Kitchen Temperature', mqtt_topic='sensors/kitchen/temperature', render_template='{payload.temperature}°C', display_order=3, duration=5),
+            DisplayItem(name='Living Room Temperature', mqtt_topic='sensors/living_room/temperature', render_template='{{payload.temperature}}°C', display_order=1, duration=5),
+            DisplayItem(name='Humidity Living Room', mqtt_topic='sensors/living_room/humidity', render_template='{{payload.humidity}}%', display_order=2, duration=5),
+            DisplayItem(name='Kitchen Temperature', mqtt_topic='sensors/kitchen/temperature', render_template='{{payload.temperature}}°C', display_order=3, duration=5),
         ]
         
         for item in samples:

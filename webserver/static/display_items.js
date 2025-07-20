@@ -126,6 +126,8 @@ async function editItem(id) {
         
         // Scroll to form
         document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        window.RenderPreview.triggerPreview();
+
     } catch (error) {
         showMessage('Error loading item', 'error');
         console.error('Error:', error);
@@ -169,6 +171,8 @@ function resetForm() {
     document.getElementById('submit-btn').textContent = 'Add';
     currentEditId = null;
     clearErrors();
+    window.RenderPreview.reset();
+
 }
 
 function clearErrors() {

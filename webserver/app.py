@@ -3,7 +3,7 @@ from flask import Flask
 from database import db, init_database
 
 # Import blueprints
-from api import api_config, api_display_item
+from api import api_config, api_display_item, api_render_preview
 from web.routes import web_bp
 
 app = Flask(__name__)
@@ -17,6 +17,7 @@ db.init_app(app)
 # Blueprint registration
 app.register_blueprint(api_config)
 app.register_blueprint(api_display_item)
+app.register_blueprint(api_render_preview)
 
 app.register_blueprint(web_bp)
 
