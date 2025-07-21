@@ -2,6 +2,7 @@
 from database import init_database
 from database import Configuration
 from daemon.mqtt_client import MQTTClient
+from daemon.display_manager import DisplayManager
 import time
 import logging
 
@@ -9,7 +10,6 @@ init_database()
 
  # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-
 
 # Create MQTT client instance
 mqtt_client = MQTTClient(
@@ -21,12 +21,11 @@ mqtt_client = MQTTClient(
     qos=1
 )
 
-try:
-    # Connect to broker
-    mqtt_client.start()
+display_manager = DisplayManager(mqtt_client)
 
-    # Example publish
-    mqtt_client.subscribe("z2m/sensor_temp_01_office")
+try:
+    mqtt_client.start()
+    display_manager.start()
 
     # Keep the program running to receive messages
     while True:
@@ -36,3 +35,4 @@ except KeyboardInterrupt:
     print("Stopping by user request")
 finally:
     mqtt_client.stop()
+    display_manager.stop()

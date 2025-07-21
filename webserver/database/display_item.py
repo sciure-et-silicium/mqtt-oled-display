@@ -28,3 +28,12 @@ class DisplayItem(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.order_by(cls.display_order, cls.name).all()
+
+    # use thread safe session for this method
+    @classmethod
+    def get_all_active(cls):
+        session = db.session()  
+        try:
+            return session.query(cls).filter_by(is_active=True).order_by(cls.display_order, cls.mqtt_topic).all()
+        finally:
+            session.close()  

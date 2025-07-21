@@ -33,9 +33,10 @@ class MQTTClient:
         self.password = password
         self.client_id = client_id or f"python-mqtt-{mqtt._generate_id()}"
         self.qos = qos
+        
 
-        self.payloads: Dict[str, str] = {}
-        self.lock = Lock()
+        self._message_callback = None
+        self._connection_callback = None
 
         # Initialize MQTT client
         self.client = mqtt.Client(client_id=self.client_id)
@@ -52,37 +53,40 @@ class MQTTClient:
 
     def start(self) -> None:
         """Connect to the MQTT broker and start the network loop."""
-        print("def start(self) -> None:")
         try:
             self.client.connect(self.broker_host, self.broker_port, 60)
             self.client.loop_start()
         except Exception as e:
-            logging.error(f"Connection error: {e}")
+            logging.error(f"MQTT Connection error: {e}")
             raise
 
     def _on_connect(self, client, userdata, flags, rc) -> None:
         """Callback for when the client connects to the broker."""
-        if rc == 0:
-            logging.info("Connected to MQTT broker")
-        else:
-            logging.error(f"Connection failed with code: {rc}")
+        if rc != 0:
+            logging.error(f"MQTT Connection failed with code: {rc}")
+            return
+        
+        logging.info("Connected to MQTT broker")
+        if self._connection_callback is None: return
+        self._connection_callback()
+
 
     def stop(self) -> None:
         """Disconnect from the MQTT broker."""
         try:
             self.client.loop_stop()
             self.client.disconnect()
-            logging.info("MQTT client disconnected")
+            logging.debug("MQTT client disconnected")
         except Exception as e:
-            logging.error(f"Disconnection error: {e}")
+            logging.error(f"MQTT Disconnection error: {e}")
 
     
     def _on_disconnect(self, client, userdata, rc) -> None:
         """Callback for when the client disconnects from the broker."""
         if rc != 0:
-            logging.warning(f"Unexpected disconnection, code: {rc}")
+            logging.warning(f"MQTT Unexpected disconnection, code: {rc}")
         else:
-            logging.info("Normal disconnection")
+            logging.debug("MQTT Normal disconnection")
 
     def subscribe(self, topic: str, qos: Optional[int] = None) -> None:
         """
@@ -92,23 +96,39 @@ class MQTTClient:
             topic: Topic to subscribe to
             qos: Quality of Service level (uses default if None)
         """
+        logging.debug(f"MQTT subscribe topic={topic}")
         qos = qos or self.qos
         try:
             self.client.subscribe(topic, qos=qos)
         except Exception as e:
-            logging.error(f"Subscription error: {e}")
+            logging.error(f"MQTT Subscription error: {e}")
+
+    def unsubscribe(self, topic: str) -> bool:
+        logging.debug(f"MQTT unsubscribe topic={topic}")
+        try:
+            result, _ = self.client.unsubscribe(topic)
+            if result == mqtt.MQTT_ERR_SUCCESS:
+                return True
+
+            logging.error(f"MQTT unsubscription error: {result}")
+        except Exception as e:
+            logging.error(f"MQTT unsubscription error: {e}")
+        return False
 
     def _on_message(self, client, userdata, msg) -> None:
-        with self.lock:
-            """Callback for when a message is received from the broker."""
-            try:
-                payload = msg.payload.decode('utf-8')
-                logging.info(f"Message received on {msg.topic}: {payload}")
-                self.payloads[payload] = payload
+        """Callback for when a message is received from the broker."""
+        if self._message_callback is None: return
 
-            except Exception as e:
-                logging.error(f"Error processing message: {e}")
+        try:
+            payload = msg.payload.decode('utf-8')
+            logging.debug(f"MQTT Message received on {msg.topic}: {payload}")
+            self._message_callback(msg.topic, payload)
+        
+        except Exception as e:
+            logging.error(f"MQTT Error processing message: {e}")
 
-    def get_payload(self, topic):
-        with self.lock:
-            return self.payloads.get(topic)
+    def set_message_callback(self, callback) :
+        self._message_callback = callback
+   
+    def set_connection_callback(self, callback) :
+        self._connection_callback = callback
