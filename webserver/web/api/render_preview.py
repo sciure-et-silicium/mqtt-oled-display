@@ -34,7 +34,7 @@ def preview_render():
         template_str = data.get('render_template', '')
         payload_raw = data.get('payload', '')
 
-        try 
+        try:
             return jsonify({
                 "success": True,
                 "result": render_template(template_str, payload_raw)

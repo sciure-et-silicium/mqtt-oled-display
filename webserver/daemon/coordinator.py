@@ -38,8 +38,8 @@ class Coordinator(threading.Thread):
                     self.subscription_refresh()
                     self.subscription_refresh_request.clear()
 
-                # time.sleep(0.05) # max 20 FPS
-                time.sleep(1)
+                time.sleep(0.05) # max 20 FPS
+                #time.sleep(1)
 
                 self.display()
                 
@@ -90,7 +90,6 @@ class Coordinator(threading.Thread):
             logging.debug(f"switching to next display item. ID: {item.id}, Nom: {item.name}, Topic: {item.mqtt_topic}")
 
         # update display in all cases
-        logging.debug(f"updating display with display item. ID: {item.id}, Nom: {item.name}, Topic: {item.mqtt_topic}")
         try:
 
             render_result = render_template(
