@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from helpers.render_template import render_display_value
+from helpers.render import render_template
 
 api_render_preview = Blueprint('render_preview', __name__)
 
@@ -33,9 +33,14 @@ def preview_render():
         
         template_str = data.get('render_template', '')
         payload_raw = data.get('payload', '')
-        
-        result = render_display_value(template_str, payload_raw)
-        return jsonify(result)
+
+        try 
+            return jsonify({
+                "success": True,
+                "result": render_template(template_str, payload_raw)
+            })
+        except Exception as e:
+            return jsonify({"success": False, "error": f"Render error: {str(e)}"})
         
     except Exception as e:
         return jsonify({"success": False, "error": f"Server error: {str(e)}"})

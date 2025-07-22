@@ -1,8 +1,7 @@
 
 from database import init_database
 from database import Configuration
-from daemon.mqtt_client import MQTTClient
-from daemon.coordinator import Coordinator
+from daemon import Coordinator, Display, MQTTClient
 import time
 import logging
 import signal
@@ -24,8 +23,9 @@ mqtt_client = MQTTClient(
     qos=1
 )
 
+display = Display()
 
-coordinator = Coordinator(mqtt_client)
+coordinator = Coordinator(display, mqtt_client)
 
 # handle sigusr1 with thread safety
 sig_usr1_received = False

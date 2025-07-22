@@ -1,14 +1,15 @@
 import threading
 import time
 import logging
+import os
 from database import DisplayItem
+from helpers.render import render_template
 
 class Coordinator(threading.Thread):
-    def __init__(self, mqtt_client):
+    def __init__(self, display, mqtt_client):
         threading.Thread.__init__(self)
         
         self._stop_request = threading.Event()
-        self.display_refresh_request = threading.Event()
         self.subscription_refresh_request = threading.Event()
 
         self.mqtt_client = mqtt_client
@@ -21,6 +22,9 @@ class Coordinator(threading.Thread):
         self._display_items = []
         self._current_displayed_item = 0
         self._subscribed_topics = []
+        self._timer = time.time()
+
+        self._display = display
         
         logging.debug("Coordinator initialized")
 
@@ -34,15 +38,15 @@ class Coordinator(threading.Thread):
                     self.subscription_refresh()
                     self.subscription_refresh_request.clear()
 
-                # handle display refresh
-                if self.display_refresh_request.is_set() :
-                    self.display_refresh()
-                    self.display_refresh_request.clear()
+                # time.sleep(0.05) # max 20 FPS
+                time.sleep(1)
 
-                time.sleep(0.1)
+                self.display()
+                
             self._stop_request.clear()
         except Exception as e:
             logging.error(f"Exception in Coordinator thread: {e}", exc_info=True)
+            os._exit(1)
         logging.debug("Coordinator thread stopped")
 
     def stop(self):
@@ -55,25 +59,53 @@ class Coordinator(threading.Thread):
     def on_message(self, topic, payload):
         logging.debug(f"Coordinator on_message {topic}: {payload}")
         self.payload(topic, payload)
-        self.display_refresh_request.set()
     
     def payload(self, topic, value=None):
         with self.lock:
             if value is not None:
                 self.payloads[topic] = value
-            return self.payloads[topic]            
+            return self.payloads.get(topic)
     
 
     def on_connection(self):
         logging.debug("Coordinator on_connection")
         self.subscription_refresh_request.set()
 
-    def display_refresh(self):
-        logging.debug("Coordinator display_refresh")
-        self.update_display()
+    def display(self):
+        now = time.time()
+        delta = now - self._timer
+        
+        if len(self._display_items) == 0: # just in case
+            self._display.render("No active display item")
+            return
 
-    def update_display(self):
-        logging.debug("Coordinator update_display")
+        item = self._display_items[self._current_displayed_item];
+        
+        if delta > item.duration:
+            self._timer = now
+            # duration for display item is over, so go for the next one
+            self._current_displayed_item = (self._current_displayed_item + 1) % len(self._display_items)
+            item = self._display_items[self._current_displayed_item];
+
+            logging.debug(f"switching to next display item. ID: {item.id}, Nom: {item.name}, Topic: {item.mqtt_topic}")
+
+        # update display in all cases
+        logging.debug(f"updating display with display item. ID: {item.id}, Nom: {item.name}, Topic: {item.mqtt_topic}")
+        try:
+
+            render_result = render_template(
+                item.render_template,
+                self.payload(item.mqtt_topic)
+            )
+
+            self._display.render(
+                render_result
+            )
+        except Exception as e:
+            logging.Error(f"Render error: {str(e)}")
+            display.render(f"Render error: {str(e)}")
+        
+
 
     def subscription_refresh(self):
         logging.debug("Coordinator subscription_refresh")
