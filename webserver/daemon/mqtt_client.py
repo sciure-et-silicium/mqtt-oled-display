@@ -4,6 +4,7 @@ import json
 import logging
 from typing import List, Optional, Dict
 from threading import Lock
+import os
 
 
 class MQTTClient:
@@ -125,7 +126,8 @@ class MQTTClient:
             self._message_callback(msg.topic, payload)
         
         except Exception as e:
-            logging.error(f"MQTT Error processing message: {e}")
+            logging.error(f"MQTT Error processing message: {e}", exc_info=True)
+            os._exit(1)
 
     def set_message_callback(self, callback) :
         self._message_callback = callback

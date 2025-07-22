@@ -2,9 +2,12 @@
 from database import init_database
 from database import Configuration
 from daemon.mqtt_client import MQTTClient
-from daemon.display_manager import DisplayManager
+from daemon.coordinator import Coordinator
 import time
 import logging
+import signal
+from threading import Lock
+
 
 init_database()
 
@@ -21,18 +24,38 @@ mqtt_client = MQTTClient(
     qos=1
 )
 
-display_manager = DisplayManager(mqtt_client)
+
+coordinator = Coordinator(mqtt_client)
+
+# handle sigusr1 with thread safety
+sig_usr1_received = False
+var_lock = Lock()
+def handle_sigusr1(signum, frame):
+    logging.info("Received USR1 signal")
+    with var_lock:
+        sig_usr1_received = True
+
+signal.signal(signal.SIGUSR1, handle_sigusr1)
+
 
 try:
     mqtt_client.start()
-    display_manager.start()
+    coordinator.start()
 
     # Keep the program running to receive messages
     while True:
+        with var_lock:
+            if sig_usr1_received:
+                sig_usr1_received = False
+                coordinator.reload()
+        
         time.sleep(1)
 
 except KeyboardInterrupt:
     print("Stopping by user request")
 finally:
     mqtt_client.stop()
-    display_manager.stop()
+    coordinator.stop()
+
+
+        
