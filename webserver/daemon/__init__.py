@@ -1,9 +1,9 @@
 from .coordinator import Coordinator
-from .display import Display
+from .term_display import TermDisplay
 from .mqtt_client import MQTTClient
 
 __all__ = [
     'Coordinator',
-    'Display',
+    'TermDisplay',
     'MQTTClient'
 ]

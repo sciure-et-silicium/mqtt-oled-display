@@ -1,7 +1,7 @@
 
 from database import init_database
 from database import Configuration
-from daemon import Coordinator, Display, MQTTClient
+from daemon import Coordinator, TermDisplay, MQTTClient
 import time
 import logging
 import signal
@@ -23,7 +23,7 @@ mqtt_client = MQTTClient(
     qos=1
 )
 
-display = Display()
+display = TermDisplay()
 
 coordinator = Coordinator(display, mqtt_client)
 
