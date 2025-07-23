@@ -1,12 +1,11 @@
 
 from database import init_database
 from database import Configuration
-from daemon import Coordinator, TermDisplay, MQTTClient
+from daemon import Coordinator, Display, TermDisplay, MQTTClient
 import time
 import logging
 import signal
 from threading import Lock
-
 
 init_database()
 
@@ -36,7 +35,6 @@ def handle_sigusr1(signum, frame):
         sig_usr1_received = True
 
 signal.signal(signal.SIGUSR1, handle_sigusr1)
-
 
 try:
     mqtt_client.start()
