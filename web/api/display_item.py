@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from database import db, DisplayItem, Configuration
+from database import db, DisplayItem
 
 api_display_item = Blueprint('api_display_item', __name__, url_prefix="/api/display_item")
 
