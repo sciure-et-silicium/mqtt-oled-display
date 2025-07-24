@@ -1,4 +1,3 @@
-from .configuration import Configuration
 from .display_item import DisplayItem
 from sqlalchemy import create_engine, orm
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,7 +17,6 @@ def _init_flask_db(app):
     with app.app_context():
         db.init_app(app)
         db.create_all()
-        init_default_config()
         init_sample_data()
 
 def _init_standalone_db():
@@ -37,27 +35,7 @@ def _init_standalone_db():
 
     # Create tables
     Base.metadata.create_all(engine)
-
-    init_default_config()
     init_sample_data()
-
-def init_default_config():
-    defaults = {
-        'mqtt.broker': ('localhost', 'MQTT broker address'),
-        'mqtt.port': ('1883', 'Port du broker MQTT'),
-        'mqtt.username': ('', 'MQTT username'),
-        'mqtt.password': ('', 'MQTT password'),
-        'mqtt.keepalive': ('60', ''),
-        'mqtt.qos': ('1', ''),
-        'mqtt.client_id': ('data_collector', 'MQTT client id')
-    }
-    
-    for key, (value, description) in defaults.items():
-        if not Configuration.query.filter_by(key=key).first():
-            config = Configuration(key=key, value=value, description=description)
-            db.session.add(config)
-            db.session.commit()
-            
 
 def init_sample_data():
     if DisplayItem.query.count() == 0:

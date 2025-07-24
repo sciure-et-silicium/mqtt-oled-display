@@ -6,6 +6,7 @@ import time
 import logging
 import signal
 from threading import Lock
+import helpers.pid as pid
 
 init_database()
 
@@ -23,8 +24,10 @@ mqtt_client = MQTTClient(
 )
 
 display = TermDisplay()
-
 coordinator = Coordinator(display, mqtt_client)
+
+pid.create_pid_file()
+logging.debug(f"PID file created ({pid.read_pid_file()})")
 
 # handle sigusr1 with thread safety
 sig_usr1_received = False
@@ -51,9 +54,8 @@ try:
 
 except KeyboardInterrupt:
     print("Stopping by user request")
-finally:
-    mqtt_client.stop()
-    coordinator.stop()
 
+mqtt_client.stop()
+coordinator.stop()
 
-        
+pid.cleanup_pid_file()

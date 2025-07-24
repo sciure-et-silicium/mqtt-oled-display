@@ -1,0 +1,14 @@
+# /etc/systemd/system/mqtt-oled-display.service
+[Unit]
+Description=MQTT OLED Display Service
+After=network.target
+
+[Service]
+Type=simple
+User=ruben
+WorkingDirectory=/opt/mqtt-oled-display
+ExecStart=/usr/bin/python3 daemon.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
