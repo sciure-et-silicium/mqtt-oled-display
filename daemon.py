@@ -1,27 +1,34 @@
 
 from database import init_database
-from database import Configuration
 from daemon import Coordinator, Display, TermDisplay, MQTTClient
 import time
 import logging
 import signal
 from threading import Lock
+from dotenv import load_dotenv
 import helpers.pid as pid
+import os
+
+load_dotenv()
+
+log_level = getattr(logging, os.environ.get('LOG_LEVEL', 'INFO').upper(), logging.INFO)
+logging.basicConfig(level=log_level)
+
+logging.info("Starting Daemon")
 
 init_database()
-
- # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+ 
 
 # Create MQTT client instance
 mqtt_client = MQTTClient(
-    broker_host = Configuration.get_value_by_key("mqtt.broker"),
-    broker_port = int(Configuration.get_value_by_key("mqtt.port")),
-    username = Configuration.get_value_by_key("mqtt.username"),
-    password = Configuration.get_value_by_key("mqtt.password"),
-    client_id = Configuration.get_value_by_key("mqtt.client_id"),
+    broker_host = os.environ.get("MQTT_HOST"),
+    broker_port = int(os.environ.get("MQTT_PORT")),
+    username = os.environ.get("MQTT_USERNAME"),
+    password = os.environ.get("MQTT_PASSWORD"),
+    client_id = os.environ.get("MQTT_CLIENT_ID"),
     qos=1
 )
+
 
 display = TermDisplay()
 coordinator = Coordinator(display, mqtt_client)
@@ -29,31 +36,18 @@ coordinator = Coordinator(display, mqtt_client)
 pid.create_pid_file()
 logging.debug(f"PID file created ({pid.read_pid_file()})")
 
-# handle sigusr1 with thread safety
-sig_usr1_received = False
-var_lock = Lock()
-def handle_sigusr1(signum, frame):
-    logging.info("Received USR1 signal")
-    with var_lock:
-        sig_usr1_received = True
-
-signal.signal(signal.SIGUSR1, handle_sigusr1)
-
 try:
     mqtt_client.start()
     coordinator.start()
 
     # Keep the program running to receive messages
     while True:
-        with var_lock:
-            if sig_usr1_received:
-                sig_usr1_received = False
-                coordinator.reload()
-        
-        time.sleep(1)
+        time.sleep(5)
 
 except KeyboardInterrupt:
-    print("Stopping by user request")
+    logging.debug("Stopping by user request")
+
+logging.info("Stopping Daemon")
 
 mqtt_client.stop()
 coordinator.stop()

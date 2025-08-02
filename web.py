@@ -2,7 +2,7 @@ from flask import Flask
 from database import db, init_database
 
 # Import blueprints
-from web.api import api_display_item, api_render_preview
+from web.api import api_display_item, api_other
 from web.web.routes import web_bp
 
 
@@ -17,7 +17,7 @@ init_database(app)
 
 # Blueprint registration
 app.register_blueprint(api_display_item)
-app.register_blueprint(api_render_preview)
+app.register_blueprint(api_other)
 app.register_blueprint(web_bp)
 
-app.run(debug=True, port=5000, host='0.0.0.0')
+app.run(debug=True, port=80, host='0.0.0.0')

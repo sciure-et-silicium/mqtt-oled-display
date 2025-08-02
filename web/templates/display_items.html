@@ -92,6 +92,9 @@ small {
     }
 }
 
+button { padding: 10px 20px; font-size: 16px; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.status { margin-top: 20px; }
 
 </style>
 
@@ -99,7 +102,10 @@ small {
 {% endblock %}
 
 {% block content %}
-<a style="float:right; font-size:30px" href="/config">⚙️</a>
+<div style="float:right; font-size:30px" >
+    <button id="killBtn" onclick="killDaemon()">Kill Daemon</button>
+    <div id="status" class="status"></div>
+</div>
 <a href="/">
     <h1>MQTT Display</h1>
 </a>
@@ -204,4 +210,5 @@ small {
 {% block scripts %}
 <script src="{{ url_for('static', filename='display_items.js') }}"></script>
 <script src="{{ url_for('static', filename='render_preview.js') }}"></script>
+<script src="{{ url_for('static', filename='kill_daemon.js') }}"></script>
 {% endblock %}

@@ -38,7 +38,7 @@ class Coordinator(threading.Thread):
                     self.subscription_refresh()
                     self.subscription_refresh_request.clear()
 
-                time.sleep(0.05) # max 20 FPS
+                time.sleep(0.5) # max 2 FPS
                 #time.sleep(1)
 
                 self.display()

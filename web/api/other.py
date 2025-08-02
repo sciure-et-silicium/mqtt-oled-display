@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify
 from helpers.render import render_template
+from helpers.pid import read_pid_file
+import os
+import signal
+import logging
 
-api_render_preview = Blueprint('render_preview', __name__)
+api_other = Blueprint('api_other', __name__)
 
-@api_render_preview.route('/api/preview-render', methods=['POST'])
+@api_other.route('/api/preview-render', methods=['POST'])
 def preview_render():
     """
     API endpoint to preview template rendering with simulated payload
@@ -12,17 +16,6 @@ def preview_render():
     {
         "render_template": "Template string with {{payload}} variables",
         "payload": "Raw payload data (JSON string, plain text, or number)"
-    }
-    
-    Returns:
-    {
-        "success": true,
-        "result": "Rendered template result"
-    }
-    or
-    {
-        "success": false,
-        "error": "Error description"
     }
     """
     try:
@@ -44,3 +37,16 @@ def preview_render():
         
     except Exception as e:
         return jsonify({"success": False, "error": f"Server error: {str(e)}"})
+
+
+@api_other.route('/api/kill-daemon', methods=['POST'])
+def kill_deamon():
+    try:
+        pid = read_pid_file()
+        if pid == None:
+            return jsonify({"error": "Service not running"}), 400
+        os.kill(pid, signal.SIGINT)
+        return jsonify({"status": "killed", "pid": pid})
+    except Exception as e:
+        logging.error(f"Can not send signal to reload deamon : {e}")
+        return jsonify({"error": str(e)}), 500

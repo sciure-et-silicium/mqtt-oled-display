@@ -1,13 +1,13 @@
-# /etc/systemd/system/mqtt-oled-display.service
+# /etc/systemd/system/mqtt-oled-display-webserver.service
 [Unit]
-Description=MQTT OLED Display Service
+Description=MQTT OLED Display Webserver Service
 After=network.target
 
 [Service]
 Type=simple
 User=root
 WorkingDirectory=/opt/mqtt-oled-display
-ExecStart=/usr/bin/python3 daemon.py
+ExecStart=/usr/bin/python3 web.py
 Restart=always
 StandardOutput=journal
 StandardError=journal

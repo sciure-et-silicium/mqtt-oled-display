@@ -39,6 +39,8 @@ def create_item():
         
         db.session.add(item)
         db.session.commit()
+
+        reload_daemon()
         
         return jsonify(item.to_dict()), 201
         
